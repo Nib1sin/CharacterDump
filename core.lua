@@ -81,7 +81,17 @@ function CD.seal()
 
   for key, char in pairs(CharacterDumpDB.chars) do
     local sections = {}
-    for name, s in pairs(char.sections) do sections[name] = s end
+    for name, s in pairs(char.sections) do
+      -- SavedVariables no conserva metatablas, así que la marca de json.array() se
+      -- pierde entre sesiones y una sección capturada y vacía volvía como {}. Solo
+      -- pasa con la tabla vacía: con elementos, is_array() acierta por #t > 0. Y
+      -- re-marcar una tabla vacía no puede perder nada, así que vale también para
+      -- lo ya guardado en disco — nadie tiene que volver al banco.
+      if type(s.data) == "table" and next(s.data) == nil then
+        s.data = CD.json.array({})
+      end
+      sections[name] = s
+    end
     characters[#characters + 1] = { key = key, sections = sections }
   end
 

@@ -256,6 +256,31 @@ check("core: una sección capturada y vacía sale como [] y no como {}", functio
   end
 end)
 
+check("core: una sección vacía sigue siendo [] tras pasar por SavedVariables", function()
+  fresh()
+  CD.register("vacia", { capture = function() return CD.json.array({}) end })
+  CD.onLogin()
+  -- SavedVariables se guarda como código Lua y las metatablas no sobreviven al
+  -- reinicio. Es lo que hacía salir {} en los personajes de sesiones anteriores
+  -- y [] en el que estaba conectado al sellar, en el mismo fichero.
+  setmetatable(CharacterDumpDB.chars[CD.key()].sections["vacia"].data, nil)
+  if not CD.seal():find('"data":[]', 1, true) then
+    error("la sección vacía volvió como objeto:\n" .. CD.seal())
+  end
+end)
+
+check("core: una sección con forma de objeto no se convierte en array", function()
+  -- La otra dirección del mismo arreglo: marcar como array algo con claves lo
+  -- vaciaría al codificar. De ahí que solo se re-marque la tabla vacía.
+  fresh()
+  CD.register("player", { capture = function() return { name = "Amduscia" } end })
+  CD.onLogin()
+  setmetatable(CharacterDumpDB.chars[CD.key()].sections["player"].data, nil)
+  if not CD.seal():find('"name":"Amduscia"', 1, true) then
+    error("el objeto se perdió al sellar:\n" .. CD.seal())
+  end
+end)
+
 check("core: status dice qué falta y da la pista", function()
   fresh()
   CD.register("banco", { events = { "BANKFRAME_OPENED" }, hint = "ve al banquero",
