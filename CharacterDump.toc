@@ -8,6 +8,7 @@
 json.lua
 hitem.lua
 core.lua
+output.lua
 collectors\character.lua
 collectors\items.lua
 collectors\progress.lua

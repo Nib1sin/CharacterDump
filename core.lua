@@ -117,9 +117,12 @@ local boot = CreateFrame("Frame")
 boot:RegisterEvent("PLAYER_LOGIN")
 boot:SetScript("OnEvent", function() CD.onLogin() end)
 
--- Provisional: hasta la tarea 9, cualquier forma de /cdump enseña el estado.
--- Existe para que las tareas 5-8 tengan con qué depurar los colectores.
 SLASH_CDUMP1 = "/cdump"
-SlashCmdList["CDUMP"] = function() CD.status() end
+SlashCmdList["CDUMP"] = function(msg)
+  msg = string.lower(msg or ""):gsub("^%s+", ""):gsub("%s+$", "")
+  if msg == "status" then CD.status()
+  elseif msg == "show" then CD.show()
+  else CD.dump() end
+end
 
 return CD
