@@ -1,0 +1,14 @@
+## Interface: 30300
+## Title: CharacterDump
+## Notes: Vuelca tus personajes a JSON para migrarlos a otro servidor
+## Author: Amduscia
+## Version: 0.1.0
+## SavedVariables: CharacterDumpDB
+
+json.lua
+hitem.lua
+core.lua
+collectors\character.lua
+collectors\items.lua
+collectors\progress.lua
+collectors\misc.lua
