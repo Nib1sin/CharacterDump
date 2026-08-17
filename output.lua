@@ -1,9 +1,11 @@
 local CD = CharacterDump
 local L = CD.L
 
--- ponytail: tope a ojo, sin medir. Los EditBox de 3.3.5 se arrastran con
--- volcados grandes. Ajustar contra un cliente real con un personaje de mil
--- logros; si aguanta más, subirlo.
+-- Los EditBox de 3.3.5 se arrastran con volcados grandes, así que por encima
+-- del tope no se abre la caja y se manda al fichero.
+-- Medido en un 3.3.5a real, personaje con las 22 secciones capturadas: 22 KB.
+-- El tope sobra por 4x y /cdump show abrió sin arrastrarse. Subirlo solo si
+-- aparece un personaje que lo roce.
 local MAX_PASTE_BYTES = 100 * 1024
 
 function CD.dump()
