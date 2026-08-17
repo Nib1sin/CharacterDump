@@ -13,20 +13,55 @@ Copia la carpeta `CharacterDump` en `Interface\AddOns\` de tu cliente. Si el jue
 El addon **captura solo, mientras juegas**. No hay que ejecutar nada en cada sitio: cuando abres el
 banco, guarda el banco; cuando abres el mapa de vuelo, guarda los vuelos.
 
+### Comandos
+
+Son tres. No hay más.
+
 | Comando | Qué hace |
 |---|---|
-| `/cdump status` | Qué se ha capturado y qué falta, con la pista de dónde conseguirlo |
-| `/cdump` | Sella el volcado |
-| `/cdump show` | Abre una caja con el JSON para copiar con Ctrl+C |
+| `/cdump status` | Lista las secciones: qué se capturó y qué falta, con la pista de dónde conseguirlo |
+| `/cdump` | **Sella** el volcado: construye el JSON con todo lo capturado hasta ese momento |
+| `/cdump show` | Abre una caja con el JSON dentro para copiarlo con Ctrl+C |
 
-Cuando `/cdump status` esté todo en verde:
+Cómo se lee `/cdump status`:
+
+| Línea | Significa |
+|---|---|
+| `ok` en verde | Capturada. No hay nada que hacer |
+| `--` en amarillo | Pendiente. Al lado va la pista de cómo conseguirla |
+| `err` en rojo | El colector falló, con el motivo al lado. Repórtalo: es un fallo del addon, no tuyo |
+
+### Recorrido para capturarlo todo
+
+La mayoría de las secciones se guardan solas al entrar al juego. **Cinco necesitan que abras una
+ventana**, porque el cliente no deja leer ese dato de otra forma:
+
+| Qué hacer | Qué captura |
+|---|---|
+| Abre la mochila y **mueve un objeto** de sitio | `bag` — bolsas y todo su contenido |
+| Habla con un **banquero** y deja la ventana abierta | `bank` — banco, sus bolsas y su contenido |
+| Abre el personaje (`C`) → pestaña de **monedas** | `currency` — insignias, sellos, marcas |
+| Abre el **gestor de equipo** y guarda o renombra un conjunto | `equipmentset` — conjuntos de equipo |
+| Habla con un **maestro de vuelo** y deja el mapa abierto | `taxi` — puntos de vuelo descubiertos |
+
+Con los vuelos, ojo: el cliente solo enseña los nodos del **mapa que tienes abierto**. Si migras un
+personaje que vuela por varios continentes, abre el mapa de vuelo **en cada uno** antes de sellar.
+
+No hay que ejecutar nada en cada sitio: en cuanto abres la ventana, esa sección queda guardada. Si
+dudas, `/cdump status`.
+
+### Cuando esté todo en verde
 
 1. `/cdump`
 2. `/reload` — **hace falta**: el juego no escribe el fichero al disco hasta que sales o recargas
 3. Sube `WTF\Account\<TU CUENTA>\SavedVariables\CharacterDump.lua`
 
-El fichero lleva **todos los personajes de la cuenta** que hayas volcado. Eliges cuáles migras al
-subirlo.
+Puedes sellar con secciones a medias: `/cdump` te dirá cuántas faltan y el fichero dirá cuáles no
+se capturaron. Pero **lo que no vuelques aquí no se recupera después** — este addon corre en el
+servidor del que te vas.
+
+El fichero lleva **todos los personajes de la cuenta** que hayas volcado: repite el recorrido con
+cada uno y sella con cada uno. Eliges cuáles migras al subirlo.
 
 ## Qué se vuelca
 
