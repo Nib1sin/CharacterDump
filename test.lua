@@ -153,6 +153,19 @@ check("json: las claves numéricas de un objeto salen como cadena", function()
   eq(json.encode(t), '{"16":49623}', "clave numérica")
 end)
 
+local L = dofile("locale.lua")
+
+check("locale: con el cliente en esES traduce", function()
+  -- El stub de GetLocale dice esES.
+  eq(L["Ctrl+C to copy, Escape to close."], "Ctrl+C para copiar, Escape para cerrar.", "traducida")
+end)
+
+check("locale: lo que no está traducido se queda en inglés", function()
+  -- Es lo que hace funcionar a un cliente deDE o ruRU sin una línea más.
+  eq(L["not a translated string"], "not a translated string", "sin traducir")
+  eq(string.format(L["sealed, %d bytes"], 7), "sellado, 7 bytes", "con formato")
+end)
+
 dofile("core.lua")
 local CD = CharacterDump
 

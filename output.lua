@@ -1,4 +1,5 @@
 local CD = CharacterDump
+local L = CD.L
 
 -- ponytail: tope a ojo, sin medir. Los EditBox de 3.3.5 se arrastran con
 -- volcados grandes. Ajustar contra un cliente real con un personaje de mil
@@ -13,15 +14,17 @@ function CD.dump()
     if not (s and s.captured) then pending = pending + 1 end
   end
 
-  print("|cff33ff99CharacterDump|r — sellado, " .. #out .. " bytes")
+  print("|cff33ff99CharacterDump|r — " .. string.format(L["sealed, %d bytes"], #out))
   if pending > 0 then
-    print("  |cffffff00" .. pending .. " secciones sin capturar|r — /cdump status para verlas")
+    print("  |cffffff00" .. string.format(L["%d sections not captured"], pending) ..
+          "|r — " .. L["type /cdump status to see them"])
   end
   -- SavedVariables no se escribe al disco hasta salir o recargar. Sin este
   -- aviso el jugador sube el fichero de la sesión anterior y no entiende por
   -- qué le falta el banco al que acaba de ir.
-  print("  Ahora haz |cff00ff00/reload|r y sube |cff00ff00CharacterDump.lua|r")
-  print("  Está en WTF\\Account\\<TU CUENTA>\\SavedVariables\\")
+  print("  " .. string.format(L["Now type %s and upload %s"],
+        "|cff00ff00/reload|r", "|cff00ff00CharacterDump.lua|r"))
+  print("  " .. string.format(L["It is in %s"], L["WTF\\Account\\<YOUR ACCOUNT>\\SavedVariables\\"]))
 end
 
 local frame
@@ -29,13 +32,15 @@ local frame
 function CD.show()
   local text = CharacterDumpDB and CharacterDumpDB.export
   if not text then
-    print("|cff33ff99CharacterDump|r — todavía no has sellado nada. Haz /cdump primero.")
+    print("|cff33ff99CharacterDump|r — " .. L["nothing sealed yet. Type /cdump first."])
     return
   end
   if #text > MAX_PASTE_BYTES then
-    print("|cff33ff99CharacterDump|r — el volcado son " .. math.floor(#text / 1024) ..
-          " KB, demasiado para copiar y pegar.")
-    print("  Haz |cff00ff00/reload|r y sube el fichero CharacterDump.lua.")
+    print("|cff33ff99CharacterDump|r — " ..
+          string.format(L["the dump is %d KB, too big to copy and paste."],
+                        math.floor(#text / 1024)))
+    print("  " .. string.format(L["Type %s and upload the CharacterDump.lua file."],
+          "|cff00ff00/reload|r"))
     return
   end
 
@@ -78,5 +83,5 @@ function CD.show()
   frame:Show()
   frame.edit:SetFocus()
   frame.edit:HighlightText()
-  print("|cff33ff99CharacterDump|r — Ctrl+C para copiar, Escape para cerrar.")
+  print("|cff33ff99CharacterDump|r — " .. L["Ctrl+C to copy, Escape to close."])
 end

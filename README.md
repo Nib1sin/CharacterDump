@@ -51,6 +51,12 @@ pasarían con código que el juego no acepta.
 Las pruebas cubren `json.lua` y `hitem.lua`, que son funciones puras. Los colectores leen la API
 del cliente y se prueban jugando, con `/cdump status`.
 
+### Idiomas
+
+Los mensajes salen en el idioma del cliente. Las claves de `locale.lua` **son el texto en inglés**,
+así que un cliente en un idioma sin tabla —deDE, ruRU, frFR…— se queda en inglés y funciona igual.
+Traducir a otro idioma es copiar la tabla `es`, traducir sus valores y añadirla a `byLocale`.
+
 ## Licencia
 
 Apache-2.0, ver [LICENSE](LICENSE).

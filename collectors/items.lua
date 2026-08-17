@@ -48,7 +48,7 @@ CD.register("bag", {
 
 CD.register("bank", {
   events = { "BANKFRAME_OPENED" },
-  hint = "habla con un banquero y deja la ventana abierta",
+  hint = CD.L["talk to a banker and leave the window open"],
   capture = function()
     -- No se puede leer sin la ventana abierta, y por eso la sección nace
     -- sin capturar en vez de salir vacía: [] y "no fui al banco" no son lo mismo.

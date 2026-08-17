@@ -19,7 +19,7 @@ CD.register("critter", { capture = companions("CRITTER") })
 
 CD.register("taxi", {
   events = { "TAXIMAP_OPENED" },
-  hint = "habla con un maestro de vuelo y deja el mapa abierto",
+  hint = CD.L["talk to a flight master and leave the map open"],
   capture = function()
     -- Por nombre: el cliente da el índice dentro del mapa abierto, que no es el
     -- id de TaxiNodes.dbc. El importador mapea con source.locale, igual que las
