@@ -1,7 +1,7 @@
 -- Núcleo: registro de colectores, captura oportunista, sellado y comandos.
 -- No sabe qué se vuelca. Los colectores no saben nada de esto.
 
-local ADDON, VERSION, FORMAT = "CharacterDump", "0.1.0", 1
+local ADDON, VERSION, FORMAT = "CharacterDump", "0.2.0", 1
 
 CharacterDump = CharacterDump or {}
 local CD = CharacterDump
@@ -54,6 +54,11 @@ function CD.onLogin()
       sections[name] = { captured = false }
     end
     local def = CD.collectors[name]
+
+    -- Lo que el cliente no tiene hasta pedírselo al servidor. Hoy solo las misiones
+    -- completadas, que llegan con QUEST_QUERY_COMPLETE bastante después del login.
+    if def.arm then pcall(def.arm) end
+
     if def.events then
       for _, e in ipairs(def.events) do
         byEvent[e] = byEvent[e] or {}

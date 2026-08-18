@@ -14,8 +14,11 @@ local function companions(kind)
   end
 end
 
-CD.register("mount",   { capture = companions("MOUNT") })
-CD.register("critter", { capture = companions("CRITTER") })
+-- GetNumCompanions devuelve 0 en el login: los acompañantes llegan luego.
+local COMPANION_EVENTS = { "PLAYER_ENTERING_WORLD", "COMPANION_LEARNED", "COMPANION_UPDATE" }
+
+CD.register("mount",   { events = COMPANION_EVENTS, capture = companions("MOUNT") })
+CD.register("critter", { events = COMPANION_EVENTS, capture = companions("CRITTER") })
 
 CD.register("taxi", {
   events = { "TAXIMAP_OPENED" },

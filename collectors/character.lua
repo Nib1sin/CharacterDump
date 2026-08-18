@@ -47,7 +47,11 @@ CD.register("talent", {
   end,
 })
 
+-- PLAYER_ENTERING_WORLD y no el login: en PLAYER_LOGIN GetGlyphSocketInfo todavía no
+-- devuelve nada y la sección salía capturada y VACÍA, que es la peor de las mentiras —
+-- indistinguible de "este personaje no lleva glifos".
 CD.register("glyph", {
+  events = { "PLAYER_ENTERING_WORLD", "GLYPH_UPDATED", "PLAYER_TALENT_UPDATE" },
   capture = function()
     local out = array({})
     for group = 1, GetNumTalentGroups() do
@@ -78,7 +82,10 @@ CD.register("spell", {
   end,
 })
 
+-- Igual que los glifos: en el login GetNumSkillLines() devuelve 0 y se volcaban cero
+-- profesiones de un personaje que tiene seis. Medido contra la BD del servidor.
 CD.register("skill", {
+  events = { "PLAYER_ENTERING_WORLD", "SKILL_LINES_CHANGED" },
   capture = function()
     -- Por nombre, no por id: el cliente 3.3.5a no expone el SkillLine. El
     -- importador mapea contra skillline_dbc usando source.locale de la cabecera.
@@ -95,9 +102,19 @@ CD.register("skill", {
 
 CD.register("title", {
   capture = function()
+    -- OJO con el `if` de aquí abajo, que es donde estaba el fallo: `IsTitleKnown` devuelve
+    -- 1/0 y no true/nil, y **en Lua el 0 es verdadero**. Con `if IsTitleKnown(i) then` se
+    -- colaban TODOS los títulos del juego: un volcado real trajo los 143 con el personaje
+    -- sin ninguno, y solo se vio al resolver los nombres en la web.
+    --
+    -- La comparación de abajo vale para las dos formas, por si otra versión devuelve booleano.
     local out = array({})
     for i = 1, GetNumTitles() do
-      if IsTitleKnown(i) then out[#out + 1] = i end
+      local known = IsTitleKnown(i)
+      -- Y el nombre además descarta los índices que no existen: GetNumTitles() cuenta huecos.
+      if known and known ~= 0 and GetTitleName(i) then
+        out[#out + 1] = i
+      end
     end
     return out
   end,

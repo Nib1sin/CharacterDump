@@ -1,7 +1,12 @@
 local CD = CharacterDump
 local array = CD.json.array
 
+-- Las misiones completadas NO están en el cliente: hay que pedírselas al servidor con
+-- QueryQuestsCompleted() y esperar su respuesta. Sin eso GetQuestsCompleted no rellena
+-- nada y la sección salía vacía con el personaje teniendo misiones hechas.
 CD.register("quest", {
+  events = { "QUEST_QUERY_COMPLETE" },
+  arm = function() QueryQuestsCompleted() end,
   capture = function()
     local done = {}
     GetQuestsCompleted(done)
@@ -30,7 +35,9 @@ CD.register("questlog", {
   end,
 })
 
+-- En PLAYER_LOGIN GetNumFactions() devuelve 0: la lista de reputaciones llega después.
 CD.register("reputation", {
+  events = { "PLAYER_ENTERING_WORLD", "UPDATE_FACTION" },
   capture = function()
     -- GetNumFactions solo cuenta las filas visibles, así que con una cabecera
     -- plegada sus facciones no existen para la API. Hay que desplegarlas todas
@@ -63,7 +70,9 @@ CD.register("reputation", {
   end,
 })
 
+-- Con PLAYER_ENTERING_WORLD entran bastantes más que capturando en el login.
 CD.register("achievement", {
+  events = { "PLAYER_ENTERING_WORLD" },
   capture = function()
     if not IsAddOnLoaded("Blizzard_AchievementUI") then LoadAddOn("Blizzard_AchievementUI") end
     local out = array({})
